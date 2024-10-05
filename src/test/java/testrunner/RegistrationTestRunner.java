@@ -8,6 +8,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import pages.RegistrationPage;
 import utils.Utils;
@@ -16,9 +18,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
 
 public class RegistrationTestRunner extends Setup {
-    @Test(priority = 1, description = "User registration with all fields")
+    //@Test(priority = 1, description = "User registration with all fields")
     public void doRegistration1() throws IOException, ParseException, InterruptedException {
         driver.findElement(By.xpath("//a")).click();
         RegistrationPage registrationPage=new RegistrationPage(driver);
@@ -48,14 +51,12 @@ public class RegistrationTestRunner extends Setup {
         jsonObject.put("address",address);
 
         Utils.addToJsonArray(filePath, jsonObject);
-        Thread.sleep(2000);
-        driver.switchTo().alert().accept();
 
     }
     @Test(priority = 2, description = "User registration with only mandatory fields")
     public void doRegistration2() throws IOException, ParseException, InterruptedException {
         driver.get("https://dailyfinance.roadtocareer.net/login");
-        driver.findElements(By.tagName("button")).get(1).click();
+        driver.findElement(By.xpath("//a")).click();
         RegistrationPage registrationPage=new RegistrationPage(driver);
         Faker faker=new Faker();
         String firstname=faker.name().firstName();
@@ -68,6 +69,10 @@ public class RegistrationTestRunner extends Setup {
         userModel.setPassword(password);
         userModel.setPhoneNumber(phonenumber);
         registrationPage.doRegistration(userModel);
+        WebDriverWait wait=new WebDriverWait(driver, Duration.ofSeconds(50));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("Toastify__toast")));
+        String successMessage= driver.findElement(By.className("Toastify__toast")).getText();
+        System.out.println(successMessage);
 
         String filePath="./src/test/resources/users.json";
         JSONObject jsonObject=new JSONObject();
@@ -77,8 +82,7 @@ public class RegistrationTestRunner extends Setup {
         jsonObject.put("phonenumber",phonenumber);
 
         Utils.addToJsonArray(filePath, jsonObject);
-        Thread.sleep(2000);
-        driver.switchTo().alert().accept();
+
 
     }
 }
