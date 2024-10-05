@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.time.Duration;
 
 public class RegistrationTestRunner extends Setup {
-    //@Test(priority = 1, description = "User registration with all fields")
+    @Test(priority = 1, description = "User registration with all fields")
     public void doRegistration1() throws IOException, ParseException, InterruptedException {
         driver.findElement(By.xpath("//a")).click();
         RegistrationPage registrationPage=new RegistrationPage(driver);
